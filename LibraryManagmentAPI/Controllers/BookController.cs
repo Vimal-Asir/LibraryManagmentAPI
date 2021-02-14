@@ -57,6 +57,13 @@ namespace LibraryManagmentAPI.Controllers
             return service.Delete(ID);
         }
 
+        [Route("api/Book/Login")]
+        [HttpGet]
+        public JsonResponse Login(string userName,string Password)
+        {
+            return service.Login(userName,Password);
+        }
+
         [System.Web.Http.Route("Book/Sample")]
         [HttpGet]
         public string sample()

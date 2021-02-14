@@ -23,7 +23,7 @@ namespace LibraryManagmentAPI.Controllers
         
         [Route("api/User/AddUser")]
         [HttpPost]
-        public JsonResponse AddUser(User model)
+        public JsonResponse AddUser([FromBody]User model)
         {
             return _user.Add(model);
         }

@@ -17,7 +17,7 @@ namespace LibraryManagmentAPI.Services
             JsonResponse jsonResponse = new JsonResponse();
             try
             {
-                SqlParameter[] objParam = new SqlParameter[8];
+                SqlParameter[] objParam = new SqlParameter[9];
                 objParam[0] = new SqlParameter("@ID", model.ID);
                 objParam[1] = new SqlParameter("@Name", model.Name);
                 objParam[2] = new SqlParameter("@Aauthor", model.Aauthor);
@@ -25,7 +25,8 @@ namespace LibraryManagmentAPI.Services
                 objParam[4] = new SqlParameter("@Category", model.Category);
                 objParam[5] = new SqlParameter("@Price", model.Price);
                 objParam[6] = new SqlParameter("@Image", model.Image);
-                objParam[7] = new SqlParameter("@Flag", 1);
+                objParam[7] = new SqlParameter("@Count", model.Count);
+                objParam[8] = new SqlParameter("@Flag", 1);
                 DataSet dataSet = ExecuteDataset(Procedures.ManageBook, objParam);
                 if (dataSet != null && dataSet.Tables.Count > 0)
                 {
@@ -131,6 +132,7 @@ namespace LibraryManagmentAPI.Services
                                     Aauthor = a.Field<string>("Aauthor"),
                                     Category = a.Field<int>("Category"),
                                     Price = Convert.ToInt32(a.Field<Decimal>("Price")),
+                                    Count = a.Field<int>("Count"),
                                     Publisher = a.Field<string>("Publisher"),
                                     Image = a.Field<string>("Image"),
                                     IsActive = a.Field<bool>("IsActive"),
@@ -198,6 +200,7 @@ namespace LibraryManagmentAPI.Services
                                         Publisher = a.Field<string>("Publisher"),
                                         Image = a.Field<string>("Image"),
                                         IsActive = a.Field<bool>("IsActive"),
+                                        Count = a.Field<int>("Count"),
                                     });
                                 }
                             }
@@ -233,6 +236,41 @@ namespace LibraryManagmentAPI.Services
             return jsonResponse;
         }
 
+        public JsonResponse Login(string userName, string Password)
+        {
+            JsonResponse jsonResponse = new JsonResponse();
+            try
+            {
+                SqlParameter[] objParam = new SqlParameter[2];
+                objParam[0] = new SqlParameter("@Username", userName);
+                objParam[1] = new SqlParameter("@Password", Password);
+                DataSet dataSet = ExecuteDataset(Procedures.Login, objParam);
+                if (dataSet != null && dataSet.Tables.Count > 0)
+                {
+                    // check 1st table  session exist or not
+                    DataTable statusDataTable = dataSet.Tables[0];
+                    if (statusDataTable != null && statusDataTable.Rows.Count > 0 && statusDataTable.Rows[0]["STATUS"] != null && statusDataTable.Rows[0]["STATUS"].ToString() == "S")
+                    {
+                        jsonResponse = dataSet.Tables[0].AsEnumerable().Select(a => new JsonResponse
+                        {
+                            Status = a.Field<string>("STATUS"),
+                            Message = a.Field<string>("MESSAGE")
+                        }).FirstOrDefault();
+                    }
+                }
+                else
+                {
+                    jsonResponse.Status = ResponseStatus.Failed;
+                    jsonResponse.Message = ResponseMessages.ServerError;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return jsonResponse;
+        }
+
         public JsonResponse Update(Book model)
         {
             JsonResponse jsonResponse = new JsonResponse();
@@ -240,7 +278,7 @@ namespace LibraryManagmentAPI.Services
             {
                 if (model.ID != 0)
                 {
-                    SqlParameter[] objParam = new SqlParameter[8];
+                    SqlParameter[] objParam = new SqlParameter[9];
                     objParam[0] = new SqlParameter("@ID", model.ID);
                     objParam[1] = new SqlParameter("@Name", model.Name);
                     objParam[2] = new SqlParameter("@Aauthor", model.Aauthor);
@@ -249,6 +287,7 @@ namespace LibraryManagmentAPI.Services
                     objParam[5] = new SqlParameter("@Price", model.Price);
                     objParam[6] = new SqlParameter("@Image", model.Image);
                     objParam[7] = new SqlParameter("@Flag", 2);
+                    objParam[8] = new SqlParameter("@Count", model.Count);
                     DataSet dataSet = ExecuteDataset(Procedures.ManageBook, objParam);
                     if (dataSet != null && dataSet.Tables.Count > 0)
                     {

@@ -15,6 +15,7 @@ namespace LibraryManagmentAPI.Utilities
         {
             public const string ManageUser = "[dbo].[SP_ManageUser]";
             public const string ManageBook = "[dbo].[SP_ManageBook]";
+            public const string Login = "[dbo].[SP_Login]";
         }
         
         public static class ResponseStatus

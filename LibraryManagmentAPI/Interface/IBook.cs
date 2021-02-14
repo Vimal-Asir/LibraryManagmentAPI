@@ -14,5 +14,6 @@ namespace LibraryManagmentAPI.Interface
         JsonResponse FetchByID(long ID);
         JsonResponse FetchAll();
         JsonResponse Delete(long ID);
+        JsonResponse Login(string userName, string Password);
     }
 }
