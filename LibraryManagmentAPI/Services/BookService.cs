@@ -254,7 +254,8 @@ namespace LibraryManagmentAPI.Services
                         jsonResponse = dataSet.Tables[0].AsEnumerable().Select(a => new JsonResponse
                         {
                             Status = a.Field<string>("STATUS"),
-                            Message = a.Field<string>("MESSAGE")
+                            Message = a.Field<string>("MESSAGE"),
+                            Data = a.Field<int>("RoleID")
                         }).FirstOrDefault();
                     }
                 }
